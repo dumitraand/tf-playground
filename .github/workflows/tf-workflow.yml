@@ -36,6 +36,7 @@ jobs:
           name: tf-plan
           path: plan.in
   apply:
+    name: 'Terraform Apply'
     needs: plan
     runs-on: ubuntu-latest
     environment: apply-envoirnment
