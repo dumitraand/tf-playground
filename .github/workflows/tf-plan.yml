@@ -1,0 +1,44 @@
+name: 'Run Terrafrom Plan'
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  plan-job:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: "main"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.5
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+      - name: Terraform init
+        id: init
+        run: terraform init
+      - name: Terraform validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform plan
+        id: terraform-plan
+        run: terraform plan -var="aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out="plan.in"
+      - name: Upload math result for job 1
+        uses: actions/upload-artifact@v2
+        with:
+          name: tf-plan
+          path: plan.in
+  call-workflow-passing-data:
+    needs: plan-job
+    name: Call Apply
+    uses: dumitraand/terraform-playground/.github/workflows/tf-apply.yml@prod
+      
+
+  
