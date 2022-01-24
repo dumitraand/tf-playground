@@ -38,7 +38,7 @@ jobs:
   call-workflow-passing-data:
     needs: plan-job
     name: Call Apply
-    uses: dumitraand/terraform-playground/.github/workflows/tf-apply.yml@prod
+    uses: dumitraand/tf-playground/.github/workflows/tf-apply.yml@prod
       
 
   
