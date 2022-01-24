@@ -6,7 +6,7 @@ on:
       - "main"
 
 jobs:
-  plan-job:
+  plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
     steps:
