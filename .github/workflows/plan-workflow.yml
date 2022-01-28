@@ -41,7 +41,7 @@ jobs:
           message: |
             Terraform Plan:
             
-            ${{steps.terraform_plan.plan_output}}
+            ${{ steps.terraform_plan.outputs.plan_output }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
           allow-repeats: true
