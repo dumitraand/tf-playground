@@ -26,24 +26,49 @@ jobs:
         run: terraform validate -no-color
       - name: Terraform plan
         id: terraform_plan
-        run: |
-          PLAN_OUTPUT=$(terraform plan -var="aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out=plan.in)
-          echo "::set-output name=plan_output::$PLAN_OUTPUT"
+        run: terraform plan -var="aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out=plan.in
       - name: Upload plan
         uses: actions/upload-artifact@v2
         with:
           name: tf-plan
           path: plan.in
-      - name: Post PR Comment
-        uses: mshick/add-pr-comment@v1
+      - name: Update Pull Request
+        uses: actions/github-script@0.9.0
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
-          message: |
-            Terraform Plan:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `
+            #### Terraform Format and Style 🖌  : \`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙ : \`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖 : \`${{ steps.terraform_plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`${process.env.PLAN}\`\`\`
+
+            </details>
+
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+              })
+      # - name: Post PR Comment
+      #   uses: mshick/add-pr-comment@v1
+      #   with:
+      #     message: |
+      #       Terraform Plan:
             
-            ${{ steps.terraform_plan.outputs.plan_output }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: true
+      #       ${{ steps.terraform_plan.outputs.stdout }}
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo-token-user-login: 'github-actions[bot]'
+      #     allow-repeats: true
           
 
       
