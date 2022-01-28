@@ -33,7 +33,7 @@ jobs:
           sleep 30
       - name: Terraform apply
         id: apply
-        run: terraform apply -auto-approve -no-color -auto-approve -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" plan.in
+        run: terraform apply -auto-approve -no-color -auto-approve plan.in
       - name: Notice Apply
         id: notice_apply
         run: |
