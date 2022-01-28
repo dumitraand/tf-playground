@@ -2,8 +2,10 @@ name: 'Run Terrafrom Apply'
 
 on:
   workflow_dispatch:
-    branches:
-      - main
+    inputs:
+      target:
+        description: 'Terraform target'     
+        required: false
 
 jobs:
   apply:
@@ -23,10 +25,17 @@ jobs:
         run: terraform init
       - name: Terraform plan
         id: terraform_plan
-        run: terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out="plan.in"
+        env:
+          TARGET=${{ github.event.inputs.target }}
+        run: |
+          if ["$TARGET" != ""]; then
+            terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out=plan.in
+          else
+            terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -target=$TARGET -out=plan.in
+          fi
       - name: Wait 30s
         run: |
           sleep 30
       - name: Terraform apply
         id: apply
-        run: terraform apply -auto-approve -no-color -auto-approve plan.in
+        run:  terraform apply -auto-approve -no-color -auto-approve 
