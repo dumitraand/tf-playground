@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 'Terraform target'     
+        description: 'Target Module'     
         required: false
 
 jobs:
@@ -12,10 +12,12 @@ jobs:
     name: 'Terraform Apply'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Check Branch
+        if: ${{ github.ref != 'refs/heads/main' }} || ${{ github.ref != 'refs/heads/prod' }}
+        uses: actions/github-script@v3
         with:
-          ref: "main"
+          script: |
+            core.setFailed('Not running on main or prod')
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -38,4 +40,4 @@ jobs:
           sleep 30
       - name: Terraform apply
         id: apply
-        run:  terraform apply -auto-approve -no-color -auto-approve 
+        run:  terraform apply -auto-approve -no-color -auto-approve plan.in

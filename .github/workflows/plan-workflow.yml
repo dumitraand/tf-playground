@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 'Terraform target'     
+        description: 'Target Module'
         required: false
 
 jobs:
