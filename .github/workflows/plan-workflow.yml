@@ -40,8 +40,12 @@ jobs:
             echo "Running with target: ${{ github.event.inputs.target }}"
             terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -target="${{ github.event.inputs.target }}" > plan.log
           fi
+      - name: Show plan
+        id: terraform_show_plan
+        run: |
+          cat plan.log
       - name: Update Pull Request
-        if: github.event == 'pull_request' && always()
+        if: github.event != 'workflow_dispatch' && always()
         uses: actions/github-script@0.9.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
