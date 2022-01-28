@@ -11,11 +11,13 @@ jobs:
   apply:
     name: 'Terraform Apply'
     runs-on: ubuntu-latest
-    only:
-      refs:
-        - main
-        - prod
     steps:
+      - name: Check Branch
+        if: ${{ github.ref != 'refs/heads/main' }} || ${{ github.ref != 'refs/heads/prod' }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Not running on main or prod')
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
