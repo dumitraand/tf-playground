@@ -18,6 +18,10 @@ jobs:
         with:
           script: |
             core.setFailed('Not running on main or prod')
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ env.GITHUB_REF }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
