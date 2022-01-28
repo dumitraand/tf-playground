@@ -37,8 +37,6 @@ jobs:
       - name: Update Pull Request
         if: always()
         uses: actions/github-script@0.9.0
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -56,12 +54,6 @@ jobs:
 
             </details>
 
-            <details><summary>Show Plan via ENV</summary>
-
-            \`\`\`${process.env.PLAN}\`\`\`
-
-            </details>
-
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
 
@@ -71,17 +63,6 @@ jobs:
               repo: context.repo.repo,
               body: output
               })
-      # - name: Post PR Comment
-      #   uses: mshick/add-pr-comment@v1
-      #   with:
-      #     message: |
-      #       Terraform Plan:
-            
-      #       ${{ steps.terraform_plan.outputs.stdout }}
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     repo-token-user-login: 'github-actions[bot]'
-      #     allow-repeats: true
-          
 
       
 
