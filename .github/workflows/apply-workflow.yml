@@ -24,17 +24,9 @@ jobs:
       - name: Terraform plan
         id: terraform_plan
         run: terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out="plan.in"
-      - name: Warn Apply
-        id: warn_apply
-        run: |
-          echo "::warning title=Changes Will Be Applied::Changes will be applied in 30s"
       - name: Wait 30s
         run: |
           sleep 30
       - name: Terraform apply
         id: apply
         run: terraform apply -auto-approve -no-color -auto-approve plan.in
-      - name: Notice Apply
-        id: notice_apply
-        run: |
-          echo "::notice title=Changes Applied::The changes have been applied"
