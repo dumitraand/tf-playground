@@ -33,12 +33,12 @@ jobs:
           name: tf-plan
           path: plan.in
       - name: Update Pull Request
+        if: always()
         uses: actions/github-script@0.9.0
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          if: always()
           script: |
             const fs = require('fs');
             const plan_log = fs.readFileSync("plan.log");
@@ -51,6 +51,12 @@ jobs:
             <details><summary>Show Plan</summary>
 
             \`\`\`${plan_log}\`\`\`
+
+            </details>
+
+            <details><summary>Show Plan via ENV</summary>
+
+            \`\`\`${{ process.env.plan }}\`\`\`
 
             </details>
 
