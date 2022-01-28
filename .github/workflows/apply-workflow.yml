@@ -2,23 +2,20 @@ name: 'Run Terrafrom Apply'
 
 on:
   workflow_dispatch:
-    branches:
-      - main
+    inputs:
+      target:
+        description: 'Terraform target'     
+        required: false
 
 jobs:
   apply:
     name: 'Terraform Apply'
     runs-on: ubuntu-latest
-    environment: apply-envoirnment
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           ref: "main"
-      - name: Download plan
-        uses: actions/download-artifact@v2
-        with:
-          name: tf-plan
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -26,6 +23,19 @@ jobs:
       - name: Terraform init
         id: init
         run: terraform init
+      - name: Terraform plan
+        id: terraform_plan
+        env:
+          TARGET=${{ github.event.inputs.target }}
+        run: |
+          if ["$TARGET" != ""]; then
+            terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out=plan.in
+          else
+            terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -target=$TARGET -out=plan.in
+          fi
+      - name: Wait 30s
+        run: |
+          sleep 30
       - name: Terraform apply
         id: apply
-        run: terraform apply -no-color -auto-approve plan.in
+        run:  terraform apply -auto-approve -no-color -auto-approve 
