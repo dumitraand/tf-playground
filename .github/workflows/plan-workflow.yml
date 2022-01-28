@@ -58,7 +58,7 @@ jobs:
 
             <details><summary>Show Plan via ENV</summary>
 
-            \`\`\`${{ process.env.plan }}\`\`\`
+            \`\`\`${process.env.plan}\`\`\`
 
             </details>
 
