@@ -45,7 +45,7 @@ jobs:
         run: |
           cat plan.log
       - name: Update Pull Request
-        if: github.event != 'workflow_dispatch' && always()
+        if: always() && github.event == 'pull_request'
         uses: actions/github-script@0.9.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
