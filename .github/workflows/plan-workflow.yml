@@ -26,7 +26,7 @@ jobs:
         run: terraform validate -no-color
       - name: Terraform plan
         id: terraform_plan
-        run: terraform plan var="aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out=plan.in -no-color > plan.log
+        run: terraform plan var="aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out=plan.in -no-color
       - name: Upload plan
         uses: actions/upload-artifact@v2
         with:
