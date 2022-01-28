@@ -1,0 +1,27 @@
+name: 'Run Terrafrom Apply'
+
+on: workflow_dispatch
+
+apply:
+  name: 'Terraform Apply'
+  runs-on: ubuntu-latest
+  environment: apply-envoirnment
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: "main"
+    - name: Download plan
+      uses: actions/download-artifact@v2
+      with:
+        name: tf-plan
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.5
+    - name: Terraform init
+      id: init
+      run: terraform init
+    - name: Terraform apply
+      id: apply
+      run: terraform apply -no-color -auto-approve plan.in
