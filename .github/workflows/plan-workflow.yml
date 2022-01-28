@@ -1,8 +1,6 @@
 name: 'Run Terrafrom Plan'
 
-on:
-  pull_request:
-    types: [opened, reopened]
+on: pull_request
 
 jobs:
   plan:
@@ -29,7 +27,8 @@ jobs:
       - name: Terraform plan
         id: terraform_plan
         run: |
-          echo "::set-value name=plan_output::$(terraform plan -var=\"aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\" -var=\"aws_key_secret=${{ secrets.AWS_KEY_SECRET }}\" -out=\"plan.in\"")"
+          PLAN_OUTPUT=$(terraform plan -var="aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out=plan.in)
+          echo "::set-output name=plan_output::$PLAN_OUTPUT"
       - name: Upload plan
         uses: actions/upload-artifact@v2
         with:
@@ -41,7 +40,7 @@ jobs:
           message: |
             Terraform Plan:
             
-            ${{steps.terraform_plan.plan_output}}
+            ${{ steps.terraform_plan.outputs.plan_output }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
           allow-repeats: true
