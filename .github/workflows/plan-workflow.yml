@@ -28,7 +28,7 @@ jobs:
         run: terraform validate -no-color
       - name: Terraform plan
         id: terraform_plan
-        run: terraform plan var="aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out="plan.in" -no-color > plan.log
+        run: terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out="plan.in" > plan.log
       - name: Upload plan
         uses: actions/upload-artifact@v2
         with:
@@ -37,6 +37,8 @@ jobs:
       - name: Update Pull Request
         if: always()
         uses: actions/github-script@0.9.0
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -56,7 +58,7 @@ jobs:
 
             <details><summary>Show Plan via ENV</summary>
 
-            \`\`\`${{ steps.plan.outputs.stdout }}\`\`\`
+            \`\`\`${{ process.env.PLAN }}\`\`\`
 
             </details>
 
