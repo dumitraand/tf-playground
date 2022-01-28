@@ -25,10 +25,9 @@ jobs:
         run: terraform init
       - name: Terraform plan
         id: terraform_plan
-        env:
-          TARGET=${{ github.event.inputs.target }}
         run: |
-          if ["$TARGET" != ""]; then
+          echo ${{ github.event.inputs.target }}
+          if ["${{ github.event.inputs.target }}" != ""]; then
             terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out=plan.in
           else
             terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -target=$TARGET -out=plan.in
