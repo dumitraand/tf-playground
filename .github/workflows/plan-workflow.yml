@@ -33,9 +33,11 @@ jobs:
       - name: Terraform plan
         id: terraform_plan
         run: |
-          if ["$TARGET" != ""]; then
+          if ["${{ github.event.inputs.target }}" != ""]; then
+            echo "Running without target!"
             terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" > plan.log
           else
+            echo "Running with target: ${{ github.event.inputs.target }}"
             terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -target=$TARGET > plan.log
           fi
       - name: Update Pull Request
