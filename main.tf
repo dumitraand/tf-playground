@@ -12,10 +12,19 @@ provider "aws" {
   access_key = var.aws_key_id
   secret_key = var.aws_key_secret
 }
-# Some comment
 
 resource "aws_s3_bucket" "tf_playground_bucket" {
   bucket = "test-1241vajgha12414jffhag124h"
+  acl    = "private"
+
+  tags = {
+    Name        = "Demo Bucket"
+    Environment = "Github-Demo"
+  }
+}
+
+resource "aws_s3_bucket" "tf_playground_bucket_2" {
+  bucket = "test-1241vajgha12414jffhag124h2"
   acl    = "private"
 
   tags = {

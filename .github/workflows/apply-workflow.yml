@@ -28,10 +28,10 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.target }}" = "" ]; then
             echo "Running without target!"
-            terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" > plan.log
+            terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -out='plan.in'
           else
             echo "Running with target: ${{ github.event.inputs.target }}"
-            terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -target="${{ github.event.inputs.target }}" > plan.log
+            terraform plan -no-color -var "aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_key_secret=${{ secrets.AWS_KEY_SECRET }}" -target="${{ github.event.inputs.target }}" -out='plan.in'
           fi
       - name: Wait 30s
         run: |
