@@ -29,7 +29,7 @@ jobs:
       - name: Terraform plan
         id: terraform_plan
         run: |
-          echo "::set-value name=plan_output::$(terraform plan -var='aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}' -var='aws_key_secret=${{ secrets.AWS_KEY_SECRET }}' -out=plan.in)"
+          echo "::set-output name=plan_output::$(terraform plan -var='aws_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}' -var='aws_key_secret=${{ secrets.AWS_KEY_SECRET }}' -out=plan.in)"
       - name: Upload plan
         uses: actions/upload-artifact@v2
         with:
